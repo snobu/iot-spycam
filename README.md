@@ -12,3 +12,5 @@ Currently implemented device methods:
 * `stop` - Stops capture
 
 Node 8+ required, could work with 6+, but that's on you.
+
+Needs `fswebcam` on Linux and `imagesnap` on macOS. See comments in `app.js` for more.
