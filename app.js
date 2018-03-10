@@ -68,7 +68,9 @@ function captureAndUpload(request, response) {
         }
     });
     capture = setInterval(() => {
-        webcam.capture('in_memory_image', function (err, data) {
+        // Use in-memory /tmp as tmpfs on the Pi,
+        // then hammer it
+        webcam.capture('/tmp/in_memory_image', function (err, data) {
             console.log('Image capture ready. Uploading...'.debug);
             uploadToBlob('faces.jpg', data);
         });
