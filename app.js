@@ -21,6 +21,7 @@ let webcam = NodeWebcam.create({
     height: 720,
     quality: 60,
     delay: 1,
+    skip: 20,
     // Save shots in memory
     saveShots: true,
     output: 'jpeg',
