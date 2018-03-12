@@ -12,9 +12,17 @@ const fs = require('fs');
 const mqtt = require('azure-iot-device-mqtt').Mqtt;
 const clientFromConnectionString = require('azure-iot-device-mqtt').clientFromConnectionString;
 const client = clientFromConnectionString(IOTHUB_CONNSTR);
+const exec = require('child_process').exec;
 
 let capture = null;
 const intervalInMs = 1000 * 15; // snap a pic every X sec
+
+// Use Linux framebuffer imageviewer if available
+const fbi = '/usr/bin/fbi';
+let useFbi = false;
+if (fs.existsSync(fbi)) {
+    useFbi = true;
+}
 
 let webcam = NodeWebcam.create({
     width: 1280,
@@ -71,7 +79,15 @@ function captureAndUpload(request, response) {
         // Use in-memory /tmp as tmpfs on the Pi,
         // then hammer it
         webcam.capture('/tmp/in_memory_image', function (err, data) {
-            console.log('Image capture ready. Uploading...'.debug);
+            if (fbi) {
+                exec('fbi -T 1 --noverbose -t 2 -1 -a -d /dev/fb0 ' +
+                     '/tmp/in_memory_image.jpg; clear', (error, stdout, stderr) => {
+                         if (error) { console.error(error) };
+                         if (stdout) { console.log(stdout) };
+                         // if (stderr) { console.error(stderr) };
+                     });
+            }
+            // console.log('Image capture ready. Uploading...'.debug);
             uploadToBlob('faces.jpg', data);
         });
     }, intervalInMs);
