@@ -1,4 +1,4 @@
 node_modules
 .env
 *.jpg
-stderr.log
+*.log
