@@ -13,6 +13,7 @@ const mqtt = require('azure-iot-device-mqtt').Mqtt;
 const clientFromConnectionString = require('azure-iot-device-mqtt').clientFromConnectionString;
 const client = clientFromConnectionString(IOTHUB_CONNSTR);
 const exec = require('child_process').exec;
+const crypto = require('crypto');
 
 let capture = null;
 const intervalInMs = 1000 * 15; // snap a pic every X sec
@@ -57,12 +58,15 @@ function bufferToStream(buffer) {
 }
 
 function uploadToBlob(blobName, data) {
+    let digest = crypto.createHash('md5')
+	.update(new Int32Array(data))
+	.digest('hex').substring(0, 6);
     let bytes = bufferToStream(data);
     client.uploadToBlob(blobName, bytes, data.length, (err) => {
         if (err) {
             console.error(`Error uploading file: ${err.toString()}`.error);
         } else {
-            console.log('File uploaded.'.info);
+            console.log(`File uploaded.\nMD5 hash: ${digest}`.info);
         }
     });
 }
