@@ -109,6 +109,30 @@ function stopCapture(request, response) {
     });
 }
 
+function handleSurprise(request, response) {
+    try {
+        clearInterval(capture);
+    }
+    catch (e) {
+        // We're good.
+    }
+    response.send(200, 'So it has come to this...', (err) => {
+        if (err) {
+            console.error(`An error ocurred when sending a method response:\n ${err.toString()}`.error);
+        } else {
+            console.log(`Response to method ${request.methodName} sent successfully.`.debug);
+        }
+    });
+    exec('sleep 20 && pkill ninvaders &', (error, stdout, stderr) => {
+        if (error) { console.error(error); }
+    });
+    exec('/bin/setfont /usr/share/consolefonts/Lat7-TerminusBold20x10.psf.gz; sleep 1; printf " " | /usr/games/ninvaders',
+        { maxBuffer: 1024 * 1024 }, 
+        (error, stdout, stderr) => {
+            // if (error) { console.error(error); }
+        }).stdout.pipe(process.stdout); // pipe game straight in
+}
+
 // "Main()"
 console.log(IOTHUB_CONNSTR.split(';')[1].debug);
 console.log('Client connected over MQTT.'.info);
@@ -117,4 +141,4 @@ console.log('Client connected over MQTT.'.info);
 client.onDeviceMethod('capture', captureAndUpload);
 client.onDeviceMethod('start', captureAndUpload);
 client.onDeviceMethod('stop', stopCapture);
-
+client.onDeviceMethod('surprise', handleSurprise);
