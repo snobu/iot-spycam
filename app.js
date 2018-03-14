@@ -134,8 +134,16 @@ function handleSurprise(request, response) {
 }
 
 // "Main()"
-console.log(IOTHUB_CONNSTR.split(';')[1].debug);
-console.log('Client connected over MQTT.'.info);
+const deviceId = IOTHUB_CONNSTR.split(';')[1].split('=')[1];
+client.open(err => {
+    if (err) {
+        console.error('Unable to connect to Azure IoT Hub:'.error);
+        console.error(err.message.toString().error);
+    }
+    else {
+        console.log('Device ID'.info, deviceId.rainbow, 'connected to Azure IoT Hub over MQTT. '.info);
+    }
+});
 
 // Attach handlers for device methods
 client.onDeviceMethod('capture', captureAndUpload);
