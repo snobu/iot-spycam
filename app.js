@@ -109,6 +109,17 @@ function stopCapture(request, response) {
     });
 }
 
+function handleReboot(request, response) {
+    response.send(200, 'Capture has stopped.', (err) => {
+        if (err) {
+            console.error(`An error ocurred when sending a method response:\n ${err.toString()}`.error);
+        } else {
+            console.log(`Response to method ${request.methodName} sent successfully.`.debug);
+        }
+    });
+    exec('reboot');
+}
+
 function handleSurprise(request, response) {
     try {
         clearInterval(capture);
@@ -149,4 +160,5 @@ client.open(err => {
 client.onDeviceMethod('capture', captureAndUpload);
 client.onDeviceMethod('start', captureAndUpload);
 client.onDeviceMethod('stop', stopCapture);
+client.onDeviceMethod('reboot', handleReboot);
 client.onDeviceMethod('surprise', handleSurprise);
