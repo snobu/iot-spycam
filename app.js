@@ -141,7 +141,7 @@ client.open(err => {
         console.error(err.message.toString().error);
     }
     else {
-        console.log('Device ID'.info, deviceId.rainbow, 'connected to Azure IoT Hub over MQTT. '.info);
+        console.log('\nDevice ID'.info, deviceId.rainbow, 'connected to Azure IoT Hub\nover MQTT. '.info);
     }
 });
 
