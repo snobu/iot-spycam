@@ -110,7 +110,7 @@ function stopCapture(request, response) {
 }
 
 function handleReboot(request, response) {
-    response.send(200, 'Capture has stopped.', (err) => {
+    response.send(200, 'Rebooting device...', (err) => {
         if (err) {
             console.error(`An error ocurred when sending a method response:\n ${err.toString()}`.error);
         } else {
@@ -118,6 +118,17 @@ function handleReboot(request, response) {
         }
     });
     exec('reboot');
+}
+
+function handleHalt(request, response) {
+    response.send(200, 'Shutting down device...', (err) => {
+        if (err) {
+            console.error(`An error ocurred when sending a method response:\n ${err.toString()}`.error);
+        } else {
+            console.log(`Response to method ${request.methodName} sent successfully.`.debug);
+        }
+    });
+    exec('halt -p');
 }
 
 function handleSurprise(request, response) {
@@ -161,4 +172,5 @@ client.onDeviceMethod('capture', captureAndUpload);
 client.onDeviceMethod('start', captureAndUpload);
 client.onDeviceMethod('stop', stopCapture);
 client.onDeviceMethod('reboot', handleReboot);
+client.onDeviceMethod('halt', handleHalt);
 client.onDeviceMethod('surprise', handleSurprise);
